@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>K:/bootcamp/proyecto1/logs/movement-service.log</File>
+        <File>K:/bootcamp/project1/logs/movement-service/movement-service.log</File>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>K:/bootcamp/proyecto1/logs/movement-service.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>
+                K:/bootcamp/project1/logs/movement-service/movement-service.%d{yyyy-MM-dd}.log
+            </fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
     </appender>
     <root level="INFO">
         <appender-ref ref="file" />
+    </root>
+
+    <appender name="terminal" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{dd-MM-yyyy HH:mm:ss.SSS} [%t] %level %logger - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="terminal"/>
     </root>
 </configuration>
