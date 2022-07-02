@@ -1,5 +1,6 @@
 package pe.com.nttdata.movement.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,9 @@ import java.util.Collections;
 @EnableSwagger2
 public class SwaggerConfig {
 
+    @Value("${swagger.title}")
+    private String title;
+
     @Bean
     public Docket apiDocket() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -30,7 +34,7 @@ public class SwaggerConfig {
 
     private ApiInfo getApiInfo() {
         return new ApiInfo(
-                "Movement Service API",
+                title,
                 "Movement Service API Description",
                 "1.0.0",
                 "https://opensource.org/licenses/MIT",
