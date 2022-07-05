@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/movements")
@@ -26,39 +27,45 @@ public class MovementController {
     @GetMapping("/{id}")
     public Mono<Movement> getMovement(@PathVariable Long id) { return movementService.findById(id); }
 
-    @PostMapping("/saving-account/{id}")
-    public Mono<Movement> registerPerSavingAccount(@PathVariable Long id, @RequestBody Movement movement) {
-        return null;
+    @PostMapping("/saving-account/{accountId}")
+    public Mono<Movement> registerPerSavingAccount(@PathVariable Long accountId, @RequestBody Movement movement)
+            throws ExecutionException, InterruptedException {
+        return movementService.save(movement, accountId);
     }
 
-    @PostMapping("/current-account/{id}")
-    public Mono<Movement> registerPerCurrentAccount(@PathVariable Long id, @RequestBody Movement movement) {
-        return null;
+    @PostMapping("/current-account/{accountId}")
+    public Mono<Movement> registerPerCurrentAccount(@PathVariable Long accountId, @RequestBody Movement movement)
+            throws ExecutionException, InterruptedException {
+        return movementService.save(movement, accountId);
     }
 
-    @PostMapping("/fixed-term/{id}")
-    public Mono<Movement> registerPerFixedTerm(@PathVariable Long id, @RequestBody Movement movement) {
-        return null;
+    @PostMapping("/fixed-term/{accountId}")
+    public Mono<Movement> registerPerFixedTerm(@PathVariable Long accountId, @RequestBody Movement movement)
+            throws ExecutionException, InterruptedException {
+        return movementService.save(movement, accountId);
     }
 
-    @PostMapping("/personal-credit/{id}")
-    public Mono<Movement> registerPerPersonalCredit(@PathVariable Long id, @RequestBody Movement movement) {
-        return null;
+    @PostMapping("/personal-credit/{accountId}")
+    public Mono<Movement> registerPerPersonalCredit(@PathVariable Long accountId, @RequestBody Movement movement)
+            throws ExecutionException, InterruptedException {
+        return movementService.save(movement, accountId);
     }
 
-    @PostMapping("/business-credit/{id}")
-    public Mono<Movement> registerPerBusinessCredit(@PathVariable Long id, @RequestBody Movement movement) {
-        return null;
+    @PostMapping("/business-credit/{accountId}")
+    public Mono<Movement> registerPerBusinessCredit(@PathVariable Long accountId, @RequestBody Movement movement)
+            throws ExecutionException, InterruptedException {
+        return movementService.save(movement, accountId);
     }
 
-    @PostMapping("/credit-card/{id}")
-    public Mono<Movement> registerPerCreditCard(@PathVariable Long id, @RequestBody Movement movement) {
-        return null;
+    @PostMapping("/credit-card/{accountId}")
+    public Mono<Movement> registerPerCreditCard(@PathVariable Long accountId, @RequestBody Movement movement)
+            throws ExecutionException, InterruptedException {
+        return movementService.save(movement, accountId);
     }
 
     @DeleteMapping("/{id}")
-    public Mono<Movement> cancelMovement(@PathVariable Long id) {
-        return null;
+    public Mono<Movement> cancelMovement(@PathVariable Long id, @PathVariable Long accountId) {
+        return movementService.delete(id);
     }
 
 }
