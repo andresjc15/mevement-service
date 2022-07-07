@@ -1,15 +1,25 @@
 package pe.com.nttdata.movement.api;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import pe.com.nttdata.movement.model.document.Movement;
 import pe.com.nttdata.movement.model.service.MovementService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.file.Path;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -22,50 +32,147 @@ public class MovementController {
     private final MovementService movementService;
 
     @GetMapping
+    @Operation(summary = "Get all movements")
     public Flux<Movement> getMovements() { return movementService.getAll(); }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get movement by id")
     public Mono<Movement> getMovement(@PathVariable Long id) { return movementService.findById(id); }
 
     @PostMapping("/saving-account/{accountId}")
-    public Mono<Movement> registerPerSavingAccount(@PathVariable Long accountId, @RequestBody Movement movement)
+    @Operation(summary = "Register movement")
+    public Mono<ResponseEntity<Map<String, Object>>> registerPerSavingAccount(@PathVariable Long accountId, @RequestBody Movement movement)
             throws ExecutionException, InterruptedException {
-        return movementService.save(movement, accountId);
+        Map<String, Object> response = new HashMap<String, Object>();
+        return movementService.save(movement, accountId)
+                .map(mov -> {
+                    log.info("[is null]: " + mov.getAddress());
+                    if (mov.getAddress() == null) {
+                        response.put("message", "Insufficient amount");
+                    } else {
+                        response.put("movement", movement);
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(response);
+                });
     }
 
     @PostMapping("/current-account/{accountId}")
-    public Mono<Movement> registerPerCurrentAccount(@PathVariable Long accountId, @RequestBody Movement movement)
+    @Operation(summary = "Register movement in current account")
+    public Mono<ResponseEntity<Map<String, Object>>> registerPerCurrentAccount(@PathVariable Long accountId, @RequestBody Movement movement)
             throws ExecutionException, InterruptedException {
-        return movementService.save(movement, accountId);
+        Map<String, Object> response = new HashMap<String, Object>();
+        return movementService.save(movement, accountId)
+                .map(mov -> {
+                    log.info("[is null]: " + mov.getAddress());
+                    if (mov.getAddress() == null) {
+                        response.put("message", "Insufficient amount");
+                    } else {
+                        response.put("movement", movement);
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(response);
+                });
     }
 
     @PostMapping("/fixed-term/{accountId}")
-    public Mono<Movement> registerPerFixedTerm(@PathVariable Long accountId, @RequestBody Movement movement)
+    @Operation(summary = "Register movement in fixed term")
+    public Mono<ResponseEntity<Map<String, Object>>> registerPerFixedTerm(@PathVariable Long accountId, @RequestBody Movement movement)
             throws ExecutionException, InterruptedException {
-        return movementService.save(movement, accountId);
+        Map<String, Object> response = new HashMap<String, Object>();
+        return movementService.save(movement, accountId)
+                .map(mov -> {
+                    log.info("[is null]: " + mov.getAddress());
+                    if (mov.getAddress() == null) {
+                        response.put("message", "Insufficient amount");
+                    } else {
+                        response.put("movement", movement);
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(response);
+                });
     }
 
     @PostMapping("/personal-credit/{accountId}")
-    public Mono<Movement> registerPerPersonalCredit(@PathVariable Long accountId, @RequestBody Movement movement)
+    @Operation(summary = "Register movement in personal credit")
+    public Mono<ResponseEntity<Map<String, Object>>> registerPerPersonalCredit(@PathVariable Long accountId, @RequestBody Movement movement)
             throws ExecutionException, InterruptedException {
-        return movementService.save(movement, accountId);
+        Map<String, Object> response = new HashMap<String, Object>();
+        return movementService.save(movement, accountId)
+                .map(mov -> {
+                    log.info("[is null]: " + mov.getAddress());
+                    if (mov.getAddress() == null) {
+                        response.put("message", "Insufficient amount");
+                    } else {
+                        response.put("movement", movement);
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(response);
+                });
     }
 
     @PostMapping("/business-credit/{accountId}")
-    public Mono<Movement> registerPerBusinessCredit(@PathVariable Long accountId, @RequestBody Movement movement)
+    @Operation(summary = "Register movement in business credit")
+    public Mono<ResponseEntity<Map<String, Object>>> registerPerBusinessCredit(@PathVariable Long accountId, @RequestBody Movement movement)
             throws ExecutionException, InterruptedException {
-        return movementService.save(movement, accountId);
+        Map<String, Object> response = new HashMap<String, Object>();
+        return movementService.save(movement, accountId)
+                .map(mov -> {
+                    log.info("[is null]: " + mov.getAddress());
+                    if (mov.getAddress() == null) {
+                        response.put("message", "Insufficient amount");
+                        return ResponseEntity.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(response);
+                    }
+                        response.put("movement", movement);
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(response);
+                });
     }
 
     @PostMapping("/credit-card/{accountId}")
-    public Mono<Movement> registerPerCreditCard(@PathVariable Long accountId, @RequestBody Movement movement)
+    @Operation(summary = "Register movement in credit card")
+    public Mono<ResponseEntity<Map<String, Object>>> registerPerCreditCard(@PathVariable Long accountId, @RequestBody Movement movement)
             throws ExecutionException, InterruptedException {
-        return movementService.save(movement, accountId);
+        Map<String, Object> response = new HashMap<String, Object>();
+        return movementService.save(movement, accountId)
+                .map(mov -> {
+                    log.info("[is null]: " + mov.getAddress());
+                    if (mov.getAddress() == null) {
+                        response.put("message", "Insufficient amount");
+                    } else {
+                        response.put("movement", movement);
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(response);
+                });
     }
 
     @DeleteMapping("/{id}")
-    public Mono<Movement> cancelMovement(@PathVariable Long id, @PathVariable Long accountId) {
-        return movementService.delete(id);
+    @Operation(summary = "Cancel movement")
+    public Mono<Movement> cancelMovement(@PathVariable Long id, @RequestBody Movement movement) {
+        return movementService.delete(id, movement.getDescription());
+    }
+
+    @GetMapping("/page/{page}/term/{term}")
+    @Operation(summary = "Get all movements pagination")
+    public Flux<Movement> getMovementsPagination(@PathVariable String term, @PathVariable Integer page) {
+        Pageable pageable = PageRequest.of(page, 3);
+        term = "";
+        return movementService.getAllPagination(term, pageable);
+    }
+
+    @GetMapping("/count")
+    @Operation(summary = "Get quantity of movements")
+    public Mono<Long> getQuantityMovements() {
+        return movementService.getQuantityMovements();
     }
 
 }

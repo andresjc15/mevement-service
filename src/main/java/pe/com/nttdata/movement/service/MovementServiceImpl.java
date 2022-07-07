@@ -3,7 +3,9 @@ package pe.com.nttdata.movement.service;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import pe.com.nttdata.movement.client.account.model.service.AccountService;
 import pe.com.nttdata.movement.model.document.Movement;
 import pe.com.nttdata.movement.model.repository.MovementRepository;
@@ -35,6 +37,16 @@ public class MovementServiceImpl implements MovementService {
     }
 
     @Override
+    public Flux<Movement> getAllPagination(String term, Pageable pageable) {
+        return movementRepository.findByAddressContains(term, pageable);
+    }
+
+    @Override
+    public Mono<Long> getQuantityMovements() {
+        return movementRepository.count();
+    }
+
+    @Override
     public Mono<Movement> save(Movement movement, Long accountId) throws ExecutionException, InterruptedException {
         movement.setId(sequenceGeneratorService.generateSequence(Movement.SEQUENCE_NAME));
         log.info("[SAVING]");
@@ -57,7 +69,7 @@ public class MovementServiceImpl implements MovementService {
                 return movementRepository.save(movement);
             }
             log.info("[INSUFFICIENT AMOUNT]");
-            return null;
+            return Mono.just(new Movement());
         });
     }
 
@@ -67,8 +79,9 @@ public class MovementServiceImpl implements MovementService {
     }
 
     @Override
-    public Mono<Movement> delete(Long id) {
+    public Mono<Movement> delete(Long id, String description) {
         return movementRepository.findById(id).flatMap(m -> {
+            m.setDescription(description);
             m.setCanceled(true);
             m.setUpdatedAt(new Date());
             return movementRepository.save(m);
