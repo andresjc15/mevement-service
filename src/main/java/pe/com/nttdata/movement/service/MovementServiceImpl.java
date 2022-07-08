@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import pe.com.nttdata.movement.client.account.model.service.AccountService;
 import pe.com.nttdata.movement.model.document.Movement;
 import pe.com.nttdata.movement.model.repository.MovementRepository;
@@ -16,6 +18,7 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -31,6 +34,8 @@ public class MovementServiceImpl implements MovementService {
 
     private final AccountService accountService;
 
+    private ReactiveMongoOperations mongoOperations;
+
     @Override
     public Flux<Movement> getAll() {
         return movementRepository.findAll();
@@ -39,6 +44,64 @@ public class MovementServiceImpl implements MovementService {
     @Override
     public Flux<Movement> getAllPagination(String term, Pageable pageable) {
         return movementRepository.findByAddressContains(term, pageable);
+    }
+
+    @Override
+    public Flux<Movement> getAllBetweenDates(Date startDate, Date endDate) {
+        Query query = getQueryByDates(startDate, endDate);
+        return mongoOperations.find(query, Movement.class);
+    }
+
+    @Override
+    public Mono<Long> getQuantityBetweenDates(Date startDate, Date endDate) {
+        Query query = getQueryByDates(startDate, endDate);
+        return mongoOperations.count(query, Movement.class);
+    }
+
+    private Query getQueryByDates(Date startDate, Date endDate) {
+        LocalDateTime startLocalDate = startDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        LocalDateTime endLocalDate = endDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        log.info("[startDate]: " + startDate);
+        log.info("[endDate]: " + endDate);
+        Criteria publishedDateCriteria = Criteria
+                .where("time").gte(startLocalDate)
+                .lte(endLocalDate);
+        Query query = new Query(publishedDateCriteria);
+        return query;
+    }
+
+    @Override
+    public Flux<Movement> getAllByDate(Date date) {
+        Query query = getQueryByDate(date);
+        return mongoOperations.find(query, Movement.class);
+    }
+
+    @Override
+    public Mono<Long> getQuantityByDate(Date date) {
+        Query query = getQueryByDate(date);
+        return mongoOperations.count(query, Movement.class);
+    }
+
+    private Query getQueryByDate(Date date) {
+        LocalDateTime localDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        LocalDateTime startDate = LocalDateTime.
+                of(localDate.getYear(), localDate.getMonth(), localDate.getDayOfMonth(), 0 , 0);
+        LocalDateTime endDate = LocalDateTime.
+                of(localDate.getYear(), localDate.getMonth(), localDate.getDayOfMonth(), 23 , 59);
+        log.info("[startDate]: " + startDate);
+        log.info("[endDate]: " + endDate);
+        Criteria publishedDateCriteria = Criteria
+                .where("time")
+                .gte(startDate)
+                .lte(endDate);
+        Query query = new Query(publishedDateCriteria);
+        return query;
     }
 
     @Override
@@ -60,11 +123,12 @@ public class MovementServiceImpl implements MovementService {
                 movement.setAfterAmount(newAmount);
                 movement.setTime(LocalDateTime.now());
                 movement.setAccount(acc);
+                movement.setCanceled(false);
                 movement.setActive(true);
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement.toString());
+                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
                 return movementRepository.save(movement);
             }
@@ -117,7 +181,7 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement.toString());
+                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
                 return movementRepository.save(movement);
             }
@@ -145,7 +209,7 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement.toString());
+                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
                 return movementRepository.save(movement);
             }
@@ -173,7 +237,7 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement.toString());
+                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
                 return movementRepository.save(movement);
             }
@@ -201,7 +265,7 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement.toString());
+                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
                 return movementRepository.save(movement);
             }
@@ -229,7 +293,7 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement.toString());
+                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
                 return movementRepository.save(movement);
             }
@@ -257,7 +321,7 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement.toString());
+                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
                 return movementRepository.save(movement);
             }

@@ -17,6 +17,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -173,6 +178,30 @@ public class MovementController {
     @Operation(summary = "Get quantity of movements")
     public Mono<Long> getQuantityMovements() {
         return movementService.getQuantityMovements();
+    }
+
+    @GetMapping("/dates/{startDate}/{endDate}")
+    @Operation(summary = "Get movement between dates")
+    public Flux<Movement> getByDates(@PathVariable Date startDate, @PathVariable Date endDate) {
+        return movementService.getAllBetweenDates(startDate, endDate);
+    }
+
+    @GetMapping("/dates/{startDate}/{endDate}/quantity")
+    @Operation(summary = "Get movement between dates")
+    public Mono<Long> getQuantityByDates(@PathVariable Date startDate, @PathVariable Date endDate) {
+        return movementService.getQuantityBetweenDates(startDate, endDate);
+    }
+
+    @GetMapping("/date/{date}")
+    @Operation(summary = "Get movement by date")
+    public Flux<Movement> getByDate(@PathVariable Date date) {
+        return movementService.getAllByDate(date);
+    }
+
+    @GetMapping("/date/{date}/quantity")
+    @Operation(summary = "Get movement by date")
+    public Flux<Movement> getQuantityByDate(@PathVariable Date date) {
+        return movementService.getAllByDate(date);
     }
 
 }

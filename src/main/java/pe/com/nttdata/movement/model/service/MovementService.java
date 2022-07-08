@@ -5,6 +5,8 @@ import pe.com.nttdata.movement.model.document.Movement;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public interface MovementService {
@@ -12,6 +14,14 @@ public interface MovementService {
     Flux<Movement> getAll();
 
     Flux<Movement> getAllPagination(String term, Pageable pageable);
+
+    Flux<Movement> getAllBetweenDates(Date startDate, Date endDate);
+
+    Mono<Long> getQuantityBetweenDates(Date startDate, Date endDate);
+
+    Flux<Movement> getAllByDate(Date date);
+
+    Mono<Long> getQuantityByDate(Date date);
 
     Mono<Long> getQuantityMovements();
     Mono<Movement> save(Movement movement, Long accountId)
