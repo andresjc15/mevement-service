@@ -1,6 +1,8 @@
 package pe.com.nttdata.movement.client.account.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pe.com.nttdata.movement.client.account.TypeAccount;
 
 import java.math.BigDecimal;
@@ -9,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Account {
 
     private long id;
