@@ -34,6 +34,8 @@ public class MovementServiceImpl implements MovementService {
 
     private final AccountService accountService;
 
+    private final MovementEventService movementEventService;
+
     private ReactiveMongoOperations mongoOperations;
 
     @Override
@@ -154,12 +156,12 @@ public class MovementServiceImpl implements MovementService {
 
     @Override
     public Mono<Movement> findById(Long id) {
-        return null;
+        return movementRepository.findById(id);
     }
 
     @Override
     public Mono<Boolean> existById(Long id) {
-        return null;
+        return movementRepository.existsById(id);
     }
 
     @Override
@@ -178,12 +180,15 @@ public class MovementServiceImpl implements MovementService {
                 movement.setTime(LocalDateTime.now());
                 movement.setAccount(acc);
                 movement.setActive(true);
+                movement.setCanceled(false);
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
-                return movementRepository.save(movement);
+                this.movementEventService.publish(movement);
+                return movementRepository.save(movement).doOnSuccess(obj ->
+                        log.info("[MOVEMENT SAVED SUCCESSFULLY]: " + obj)
+                );
             }
             log.info("[INSUFFICIENT AMOUNT]");
             return null;
@@ -209,9 +214,10 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
-                return movementRepository.save(movement);
+                return movementRepository.save(movement).doOnSuccess(obj ->
+                        log.info("[MOVEMENT SAVED SUCCESSFULLY]: " + obj)
+                );
             }
             log.info("[INSUFFICIENT AMOUNT]");
             return null;
@@ -237,9 +243,10 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
-                return movementRepository.save(movement);
+                return movementRepository.save(movement).doOnSuccess(obj ->
+                        log.info("[MOVEMENT SAVED SUCCESSFULLY]: " + obj)
+                );
             }
             log.info("[INSUFFICIENT AMOUNT]");
             return null;
@@ -265,9 +272,10 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
-                return movementRepository.save(movement);
+                return movementRepository.save(movement).doOnSuccess(obj ->
+                        log.info("[MOVEMENT SAVED SUCCESSFULLY]: " + obj)
+                );
             }
             log.info("[INSUFFICIENT AMOUNT]");
             return null;
@@ -293,9 +301,10 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
-                return movementRepository.save(movement);
+                return movementRepository.save(movement).doOnSuccess(obj ->
+                        log.info("[MOVEMENT SAVED SUCCESSFULLY]: " + obj)
+                );
             }
             log.info("[INSUFFICIENT AMOUNT]");
             return null;
@@ -321,9 +330,10 @@ public class MovementServiceImpl implements MovementService {
                 movement.setCreatedAt(new Date());
                 movement.setUpdatedAt(null);
                 acc.setAmount(newAmount);
-                log.info("[SAVING OBJECT]: " + movement);
                 accountService.update(acc).subscribe();
-                return movementRepository.save(movement);
+                return movementRepository.save(movement).doOnSuccess(obj ->
+                        log.info("[MOVEMENT SAVED SUCCESSFULLY]: " + obj)
+                );
             }
             log.info("[INSUFFICIENT AMOUNT]");
             return null;

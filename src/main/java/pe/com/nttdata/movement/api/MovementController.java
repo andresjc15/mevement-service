@@ -49,7 +49,7 @@ public class MovementController {
     public Mono<ResponseEntity<Map<String, Object>>> registerPerSavingAccount(@PathVariable Long accountId, @RequestBody Movement movement)
             throws ExecutionException, InterruptedException {
         Map<String, Object> response = new HashMap<String, Object>();
-        return movementService.save(movement, accountId)
+        return movementService.saveSavingAccount(movement, accountId)
                 .map(mov -> {
                     log.info("[is null]: " + mov.getAddress());
                     if (mov.getAddress() == null) {
@@ -187,7 +187,7 @@ public class MovementController {
     }
 
     @GetMapping("/dates/{startDate}/{endDate}/quantity")
-    @Operation(summary = "Get movement between dates")
+    @Operation(summary = "Get quantity of movements between dates")
     public Mono<Long> getQuantityByDates(@PathVariable Date startDate, @PathVariable Date endDate) {
         return movementService.getQuantityBetweenDates(startDate, endDate);
     }
@@ -199,7 +199,7 @@ public class MovementController {
     }
 
     @GetMapping("/date/{date}/quantity")
-    @Operation(summary = "Get movement by date")
+    @Operation(summary = "Get quantity of movement by date")
     public Flux<Movement> getQuantityByDate(@PathVariable Date date) {
         return movementService.getAllByDate(date);
     }
