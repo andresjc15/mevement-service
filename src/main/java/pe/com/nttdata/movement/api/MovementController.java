@@ -2,6 +2,7 @@ package pe.com.nttdata.movement.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -19,12 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/movements")
 @AllArgsConstructor
 public class MovementController {
-
-    private static final Logger log = LoggerFactory.getLogger(MovementController.class);
 
     private final MovementService movementService;
 

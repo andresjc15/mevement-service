@@ -1,5 +1,6 @@
 package pe.com.nttdata.movement.client.account.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 
+@Slf4j
 @Service
 public class AccountServiceImpl implements AccountService {
-
-    private static final Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
 
     @Autowired
     private WebClient.Builder client;
