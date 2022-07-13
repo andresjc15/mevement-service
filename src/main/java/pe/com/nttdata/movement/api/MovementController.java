@@ -6,22 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.WebExchangeBindException;
 import pe.com.nttdata.movement.model.document.Movement;
 import pe.com.nttdata.movement.model.service.MovementService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.file.Path;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -202,6 +194,11 @@ public class MovementController {
     @Operation(summary = "Get quantity of movement by date")
     public Flux<Movement> getQuantityByDate(@PathVariable Date date) {
         return movementService.getAllByDate(date);
+    }
+
+    @GetMapping("/error")
+    public Flux<Movement> getError() {
+        throw new RuntimeException();
     }
 
 }
